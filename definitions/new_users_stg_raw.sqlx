@@ -11,7 +11,7 @@ with cte as (
       ,min(b.id) as `booking_id`
       ,FORMAT_TIMESTAMP("%F %T", TIMESTAMP(a.created_at)) AS `user_created_at`
       ,min(b.created_at) as booking_created_at
-      ,concat(a.first_name,b.last_name) as full_name
+      ,concat(a.first_name,a.last_name) as full_name
       ,a.city_id
       ,a.date_of_birth
       ,a.referral_code
