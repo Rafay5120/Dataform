@@ -1,0 +1,32 @@
+config {
+    type: "table",
+    schema: "raw",
+    name: "new_users_raw_dataform",
+    tags:["users","bookings"]
+}
+
+with cte as (
+  SELECT 
+      a.id as user_id
+      ,min(b.id) as `booking_id`
+      ,FORMAT_TIMESTAMP("%F %T", TIMESTAMP(a.created_at)) AS `user_created_at`
+      ,min(b.created_at) as booking_created_at
+      ,concat(a.first_name,b.last_name) as full_name
+      ,a.city_id
+      ,a.date_of_birth
+      ,a.referral_code
+       
+  FROM `staging.users` a
+    left join ${ref('all_bookings_raw_dataform')} b
+    on a.id=b.user_id
+    where b.status_id in (3,11)
+    group by all
+    )
+ 
+select 
+    a.* 
+    ,b.discounted_amount as final_amount
+    ,b.p_en_name as product_name
+from cte a
+left join ${ref('all_bookings_raw_dataform')} b
+on a.booking_id=b.id

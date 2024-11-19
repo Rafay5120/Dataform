@@ -1,0 +1,27 @@
+config {
+    type: "table",
+    schema: "raw",
+    name: "all_checkins_raw_dataform",
+    tags:["bookings"]
+}
+
+SELECT 
+        `ch`.`id` AS `id`,
+        `ch`.`booking_item_id` AS `booking_item_id`,
+        FORMAT_TIMESTAMP("%F %T", TIMESTAMP(ch.created_at)) AS `created_at`,
+        FORMAT_TIMESTAMP("%F %T", TIMESTAMP(ch.updated_at)) AS `updated_at`,
+        FORMAT_TIMESTAMP(
+          "%F %T", 
+          IF(ch.checkin_at = 'NaT', NULL, TIMESTAMP(ch.checkin_at))
+        ) AS `checkin_at`,
+        `ch`.`service_provider_branch_id` AS `service_provider_branch_id`,
+        d.city_id,
+        d.en_name as service_provider_name,
+        `b`.`user_id` AS `user_id`,
+        `b`.`id` AS `booking_id`,
+        safe_divide(`bi`.unit_price_without_vat , `bi`.max_entries) as price_per_visit
+    FROM
+        ((`staging.check_ins` `ch`
+        LEFT JOIN `staging.booking_items` `bi` ON ((`ch`.`booking_item_id` = `bi`.`id`)))
+        LEFT JOIN `staging.bookings` `b` ON ((`bi`.`booking_id` = `b`.`id`)))
+        LEFT JOIN `staging.service_provider_branches` d on `ch`.`service_provider_branch_id` = d.service_provider_id
