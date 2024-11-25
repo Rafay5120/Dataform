@@ -67,6 +67,8 @@ SELECT
         `bi`.`product_duration_id` AS `product_duration_id`,
         `bi`.`duration_type_id` AS `duration_type_id`,
         `bi`.`max_entries` AS `max_entries`,
+        -- DATE_DIFF(ifnull(DATE(b.cancelled_at), date(bi.valid_until )),date(b.created_at), day) as final_max_entries,
+        -- safe_divide (b.discounted_amount,DATE_DIFF(coalesce(SAFE_CAST(b.cancelled_at AS DATE), SAFE_CAST(bi.valid_until AS DATE)),SAFE_CAST(b.created_at as DATE), day)) as revenue_per_day,
         `bi`.`used_entries` AS `used_entries`,
         `bi`.`first_session_time` AS `first_session_time`,
         `bi`.`first_session_reminder_sent_at` AS `first_session_reminder_sent_at`,

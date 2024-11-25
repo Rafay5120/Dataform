@@ -23,10 +23,21 @@ with cte as (
     group by all
     )
  
+ , final_cte as (
+    select a.user_id, min(a.id) as `booking_id_pckg`
+      ,min(a.created_at) as booking_created_at_pckg
+    from ${ref('all_bookings_raw_dataform')} a
+    where a.status_id in (3,11) and a.is_trial = 0
+    group by all
+ )
+
 select 
     a.* 
     ,b.discounted_amount as final_amount
     ,b.p_en_name as product_name
+    ,c.booking_id_pckg, c.booking_created_at_pckg
 from cte a
 left join ${ref('all_bookings_raw_dataform')} b
 on a.booking_id=b.id
+left join final_cte c
+on a.user_id = c.user_id
