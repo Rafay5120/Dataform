@@ -106,9 +106,9 @@ SELECT
         `p`.`group_level` AS `p_group_level`
     FROM
         (((`staging.bookings` `b`
-        JOIN `staging.booking_items` `bi` ON ((`bi`.`booking_id` = `b`.`id`)))
-        JOIN `staging.product_durations` `pd` ON ((`bi`.`product_duration_id` = `pd`.`id`)))
-        JOIN `staging.products` `p` ON ((`pd`.`product_id` = `p`.`id`)))
+       left JOIN `staging.booking_items` `bi` ON ((`bi`.`booking_id` = `b`.`id`)))
+       left JOIN `staging.product_durations` `pd` ON ((`bi`.`product_duration_id` = `pd`.`id`)))
+       left JOIN `staging.products` `p` ON ((`pd`.`product_id` = `p`.`id`)))
     WHERE
         ((`b`.`booking_purpose_id` = 1)
             OR (`b`.`booking_purpose_id` IS NULL))

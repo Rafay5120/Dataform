@@ -15,7 +15,7 @@ with cte as (
       ,a.city_id
       ,a.date_of_birth
       ,a.referral_code
-       
+      ,b.is_trial
   FROM `staging.users` a
     left join ${ref('all_bookings_raw_dataform')} b
     on a.id=b.user_id
@@ -31,6 +31,7 @@ with cte as (
     group by all
  )
 
+, final_cte_v1 as (
 select 
     a.* 
     ,b.discounted_amount as final_amount
@@ -41,3 +42,11 @@ left join ${ref('all_bookings_raw_dataform')} b
 on a.booking_id=b.id
 left join final_cte c
 on a.user_id = c.user_id
+)
+
+
+select a.*
+    ,b.discounted_amount as pckg_final_amount
+    from final_cte_v1 a
+    left join ${ref('all_bookings_raw_dataform')} b
+    on a.booking_id_pckg=b.id
