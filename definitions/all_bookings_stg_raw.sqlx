@@ -9,6 +9,8 @@ SELECT
         `b`.`id` AS `id`,
         `b`.`user_id` AS `user_id`,
         `b`.`user_data_id` AS `user_data_id`,
+        `e`.`id` AS `employee_id`,
+        `c`.`id` AS `company_id`,
         `b`.`currency_id` AS `currency_id`,
         `b`.`status_id` AS `status_id`,
         `b`.`amount` AS `amount`,
@@ -110,6 +112,9 @@ SELECT
        left JOIN `staging.booking_items` `bi` ON ((`bi`.`booking_id` = `b`.`id`)))
        left JOIN `staging.product_durations` `pd` ON ((`bi`.`product_duration_id` = `pd`.`id`)))
        left JOIN `staging.products` `p` ON ((`pd`.`product_id` = `p`.`id`)))
+       left join `staging.users` u on u.id = b.user_id
+        left join `staging.employees` e on e.id = u.employee_id
+        left join  `staging.companies` c on c.id = e.company_id
     WHERE
         ((`b`.`booking_purpose_id` = 1)
             OR (`b`.`booking_purpose_id` IS NULL))

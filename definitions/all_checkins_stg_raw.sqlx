@@ -19,9 +19,10 @@ SELECT
         d.en_name as service_provider_name,
         `b`.`user_id` AS `user_id`,
         `b`.`id` AS `booking_id`,
-        safe_divide(`bi`.unit_price_without_vat , `bi`.max_entries) as price_per_visit
+        safe_divide(`bi`.unit_price_without_vat , `pd`.max_entries) as price_per_visit
     FROM
-        ((`staging.check_ins` `ch`
+        (((`staging.check_ins` `ch`
         LEFT JOIN `staging.booking_items` `bi` ON ((`ch`.`booking_item_id` = `bi`.`id`)))
         LEFT JOIN `staging.bookings` `b` ON ((`bi`.`booking_id` = `b`.`id`)))
-        LEFT JOIN `staging.service_provider_branches` d on `ch`.`service_provider_branch_id` = d.service_provider_id
+        LEFT JOIN `staging.service_provider_branches` d on `ch`.`service_provider_branch_id` = d.service_provider_id)
+        left JOIN `staging.product_durations` `pd` ON (`bi`.`product_duration_id` = `pd`.`id`)
