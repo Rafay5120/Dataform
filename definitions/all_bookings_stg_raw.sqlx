@@ -28,6 +28,7 @@ SELECT
         ) AS `cancelled_at`,
         `b`.`cancel_reason` AS `cancel_reason`,
         `b`.`payment_method_id` AS `payment_method_id`,
+        `pm`.`en_name` AS `payment_method`,
         `b`.`payment_due_date` AS `payment_due_date`,
         `b`.`used_payment_option` AS `used_payment_option`,
         `b`.`amount_without_vat` AS `amount_without_vat`,
@@ -115,6 +116,7 @@ SELECT
        left join `staging.users` u on u.id = b.user_id
         left join `staging.employees` e on e.id = u.employee_id
         left join  `staging.companies` c on c.id = e.company_id
+        left join `staging.payment_methods` pm on pm.id = b.payment_method_id
     WHERE
         ((`b`.`booking_purpose_id` = 1)
             OR (`b`.`booking_purpose_id` IS NULL))
